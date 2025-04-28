@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createUserInDatabase, loginUserInDatabase } from "../../api/index";
+import {
+  autoSignInDatabase,
+  createUserInDatabase,
+  loginUserInDatabase,
+} from "../../api/index";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -18,6 +22,18 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const user = await loginUserInDatabase(userData);
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const autoSignIn = createAsyncThunk(
+  "auth/refreshUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const user = await autoSignInDatabase();
       return user;
     } catch (error) {
       return rejectWithValue(error.message);

@@ -2,6 +2,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { fireDb } from "../utils/firebaseConfig";
@@ -45,5 +46,26 @@ export const loginUserInDatabase = async ({ email, password }) => {
     }
   } catch (e) {
     return { error: e.message };
+  }
+};
+
+export const autoSignInDatabase = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (user) {
+    try {
+      const userDocRef = doc(fireDb, "users", user.uid);
+      const docSnap = await getDoc(userDocRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+    } catch (e) {
+      console.error("Error fetching user data:", e);
+      throw new Error(e.message);
+    }
+  } else {
+    throw new Error("User not authenticated");
   }
 };
