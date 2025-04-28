@@ -29,3 +29,8 @@ a:hover {
 .logo span {
   color: hotpink;
 }
+
+.form-btn {
+  outline: none;
+  box-shadow: none;
+}
