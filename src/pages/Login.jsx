@@ -1,10 +1,13 @@
 import { Box, Button, FormLabel, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { registerUser } from "../store/auth/actions";
+import { loginUser, registerUser } from "../store/auth/actions";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isRegister, setIsRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,11 +24,24 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleRedirection = (result) => {
+    if (result.error) {
+      setIsLoading(false);
+      toast.error(result.error, { position: "bottom-right" });
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     if (isRegister) {
       dispatch(registerUser(formData));
+    } else {
+      dispatch(loginUser(formData)).then(({ payload }) =>
+        handleRedirection(payload)
+      );
     }
   };
 

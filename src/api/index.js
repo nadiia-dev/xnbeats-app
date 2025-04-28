@@ -1,5 +1,9 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { fireDb } from "../utils/firebaseConfig";
 
 export const createUserInDatabase = async ({
@@ -22,6 +26,23 @@ export const createUserInDatabase = async ({
 
     await setDoc(doc(fireDb, "users", user.uid), newUser);
     return newUser;
+  } catch (e) {
+    return { error: e.message };
+  }
+};
+
+export const loginUserInDatabase = async ({ email, password }) => {
+  try {
+    const auth = getAuth();
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    const { user } = res;
+    const userDocRef = doc(fireDb, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      throw new Error("User not found in database");
+    }
   } catch (e) {
     return { error: e.message };
   }
