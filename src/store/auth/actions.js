@@ -3,6 +3,7 @@ import {
   autoSignInDatabase,
   createUserInDatabase,
   loginUserInDatabase,
+  logoutUserFromDatabse,
 } from "../../api/index";
 
 export const registerUser = createAsyncThunk(
@@ -35,6 +36,18 @@ export const autoSignIn = createAsyncThunk(
     try {
       const user = await autoSignInDatabase();
       return user;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      await logoutUserFromDatabse();
+      return { message: "You successfully logged out" };
     } catch (error) {
       return rejectWithValue(error.message);
     }

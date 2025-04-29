@@ -2,6 +2,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -49,23 +50,33 @@ export const loginUserInDatabase = async ({ email, password }) => {
   }
 };
 
-export const autoSignInDatabase = async () => {
+export const autoSignInDatabase = () => {
   const auth = getAuth();
-  const user = auth.currentUser;
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsubscribe();
 
-  if (user) {
-    try {
-      const userDocRef = doc(fireDb, "users", user.uid);
-      const docSnap = await getDoc(userDocRef);
+      if (user) {
+        try {
+          const userDocRef = doc(fireDb, "users", user.uid);
+          const docSnap = await getDoc(userDocRef);
 
-      if (docSnap.exists()) {
-        return docSnap.data();
+          if (docSnap.exists()) {
+            resolve(docSnap.data());
+          } else {
+            reject(new Error("User data not found"));
+          }
+        } catch (e) {
+          reject(new Error(e.message));
+        }
+      } else {
+        reject(new Error("User not authenticated"));
       }
-    } catch (e) {
-      console.error("Error fetching user data:", e);
-      throw new Error(e.message);
-    }
-  } else {
-    throw new Error("User not authenticated");
-  }
+    });
+  });
+};
+
+export const logoutUserFromDatabse = async () => {
+  const auth = getAuth();
+  await signOut(auth);
 };

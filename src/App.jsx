@@ -27,7 +27,7 @@ function App() {
   const loading = useSelector(selectLoading);
 
   useEffect(() => {
-    dispatch(autoSignIn);
+    dispatch(autoSignIn());
   }, [dispatch]);
 
   return (
