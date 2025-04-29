@@ -94,7 +94,6 @@ const DashboardLayout = ({ children, title }) => {
             Hello {user.name} {user.lastName}
           </Button>
         </div>
-        <Toolbar />
         {children}
       </Box>
     </>
