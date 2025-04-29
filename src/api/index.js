@@ -12,6 +12,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -143,4 +144,22 @@ export const addImageToReview = async (reviewId, imageUrl) => {
   await updateDoc(reviewRef, {
     imageUrl,
   });
+};
+
+export const getAllReviewsFromDatabase = async () => {
+  try {
+    const snapshot = await getDocs(collection(fireDb, "reviews"));
+
+    const reviews = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+      };
+    });
+    return reviews;
+  } catch (error) {
+    console.error("Failed to fetch reviews:", error);
+    throw new Error("Could not fetch reviews");
+  }
 };

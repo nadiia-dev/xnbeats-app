@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { addImageToReview, addReviewToDatabase } from "../../api";
+import {
+  addImageToReview,
+  addReviewToDatabase,
+  getAllReviewsFromDatabase,
+} from "../../api";
 
 export const addReview = createAsyncThunk(
   "reviews/addReview",
@@ -19,6 +23,18 @@ export const updateReviewImage = createAsyncThunk(
     try {
       const review = await addImageToReview(addedReview, imageUrl);
       return review;
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const getReviews = createAsyncThunk(
+  "reviews/getAllReviews",
+  async (_, { rejectWithValue }) => {
+    try {
+      const reviews = await getAllReviewsFromDatabase();
+      return reviews;
     } catch (e) {
       return rejectWithValue(e.message);
     }
