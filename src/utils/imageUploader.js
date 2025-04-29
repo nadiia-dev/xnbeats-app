@@ -1,11 +1,11 @@
-const { VITE_CLOUD_NAME } = import.meta.env;
+const { VITE_CLOUD_NAME, VITE_PRESET_NAME } = import.meta.env;
 
 import axios from "axios";
 
 export const uploadImageToCloudinary = async (file, onUploadProgress) => {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "ml_default");
+  formData.append("upload_preset", VITE_PRESET_NAME);
 
   try {
     const response = await axios.post(

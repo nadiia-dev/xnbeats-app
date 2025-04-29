@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { addReview } from "./actions";
 
 const initialState = {
+  addedReview: "",
   reviews: [],
 };
 
@@ -10,7 +11,7 @@ const reviewsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(addReview.fulfilled, (state, action) => {
-      state.reviews.push(action.payload);
+      state.addedReview = action.payload;
     });
   },
 });

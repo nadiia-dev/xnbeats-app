@@ -41,7 +41,6 @@ const ReviewForm = () => {
   const dispatch = useDispatch();
 
   const onAddReview = (data) => {
-    console.log(data);
     dispatch(addReview({ data, user }));
     reset();
     toast.success("Congrats your post has been saved successfully!", {

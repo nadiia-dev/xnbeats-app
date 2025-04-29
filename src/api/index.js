@@ -137,3 +137,10 @@ export const addReviewToDatabase = async (data, user) => {
     throw new Error("Could not add review");
   }
 };
+
+export const addImageToReview = async (reviewId, imageUrl) => {
+  const reviewRef = doc(fireDb, "reviews", reviewId);
+  await updateDoc(reviewRef, {
+    imageUrl,
+  });
+};
