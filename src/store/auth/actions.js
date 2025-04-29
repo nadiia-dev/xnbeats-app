@@ -4,6 +4,7 @@ import {
   createUserInDatabase,
   loginUserInDatabase,
   logoutUserFromDatabse,
+  updateUserProfile,
 } from "../../api/index";
 
 export const registerUser = createAsyncThunk(
@@ -50,6 +51,18 @@ export const logoutUser = createAsyncThunk(
       return { message: "You successfully logged out" };
     } catch (error) {
       return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  "auth/updateProfile",
+  async ({ userData }, { rejectWithValue }) => {
+    try {
+      const user = await updateUserProfile(userData);
+      return user;
+    } catch (e) {
+      return rejectWithValue(e.message);
     }
   }
 );

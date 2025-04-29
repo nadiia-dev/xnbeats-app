@@ -4,8 +4,11 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updateEmail,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { fireDb } from "../utils/firebaseConfig";
 
 export const createUserInDatabase = async ({
@@ -79,4 +82,33 @@ export const autoSignInDatabase = () => {
 export const logoutUserFromDatabse = async () => {
   const auth = getAuth();
   await signOut(auth);
+};
+
+export const reAuthUser = async ({ email, password }) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("No user is currently signed in");
+  }
+
+  const credential = EmailAuthProvider.credential(email, password);
+
+  try {
+    await reauthenticateWithCredential(user, credential);
+  } catch (error) {
+    throw new Error(error.message || "Re-authentication failed");
+  }
+};
+
+export const updateUserProfile = async (data) => {
+  const docRef = doc(fireDb, "users", data.uid);
+
+  try {
+    await updateDoc(docRef, data);
+    const snapshot = await getDoc(docRef);
+    return { user: snapshot.data() };
+  } catch (error) {
+    throw new Error("Failed to update document: " + error.message);
+  }
 };

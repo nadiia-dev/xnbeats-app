@@ -102,6 +102,7 @@ const Login = () => {
               <button
                 className="form-btn btn btn-link p-0 mb-1"
                 onClick={() => setIsRegister((prevState) => !prevState)}
+                disabled={isLoading}
               >
                 here
               </button>{" "}

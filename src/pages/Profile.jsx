@@ -1,26 +1,51 @@
 import { useState } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { Box, Button, Grid, MenuItem, Paper, TextField } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../store/auth/selectors";
+import ConfirmModal from "../components/ConfirmModal";
+import { updateUser } from "../store/auth/actions";
+import { toast } from "react-toastify";
 
 const Profile = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    lastName: "",
-    email: "",
-    address: "",
-    gender: "",
-    daw: "",
-    age: "",
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const [disabled, setDisabled] = useState();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [modalState, setModalState] = useState({
+    open: false,
+    formData: "",
   });
-  const handleSubmit = () => {};
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleReAuth = (data) => {
+    setModalState({
+      open: true,
+      formData: data,
+    });
   };
 
+  const handleClose = () => {
+    setModalState({ open: false, formData: "" });
+  };
+
+  const submitForm = (data) => {
+    setDisabled(true);
+    setModalState({ open: false, formData: "" });
+
+    dispatch(updateUser({ userData: { uid: user.uid, ...data } })).then(() =>
+      toast.success("Congrats your profile has been updated!", {
+        position: "bottom-right",
+      })
+    );
+  };
   return (
     <DashboardLayout title="Profile">
       <Box maxWidth="md" mx="auto" mb={4} direction="column">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(handleReAuth)}>
           <Grid container direction="column" spacing={2}>
             <Grid item>
               <Grid container spacing={2}>
@@ -29,45 +54,55 @@ const Profile = () => {
                     fullWidth
                     label="First name"
                     name="name"
-                    value={formData.name}
-                    onChange={handleChange}
+                    defaultValue={user.name}
+                    {...register("name", { required: true })}
                   />
+                  {errors.name && (
+                    <span className="text-danger">This field is required</span>
+                  )}
                 </Grid>
                 <Grid item size={6}>
                   <TextField
                     fullWidth
                     label="Last name"
                     name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
+                    defaultValue={user.lastName}
+                    {...register("lastName", { required: true })}
                   />
+                  {errors.lastName && (
+                    <span className="text-danger">This field is required</span>
+                  )}
                 </Grid>
               </Grid>
             </Grid>
 
-            {/* Row 2: Email */}
             <Grid item>
               <TextField
                 fullWidth
                 label="Email"
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
+                defaultValue={user.email}
+                disabled
+                {...register("email", {
+                  required: true,
+                  pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                })}
               />
+              {errors.email && (
+                <span className="text-danger">This field is required</span>
+              )}
             </Grid>
 
-            {/* Row 3: Address */}
             <Grid item>
               <TextField
                 fullWidth
                 label="Address"
                 name="address"
-                value={formData.address}
-                onChange={handleChange}
+                defaultValue={user.address}
+                {...register("address")}
               />
             </Grid>
 
-            {/* Row 4: Gender + DAW + Age */}
             <Grid item>
               <Grid container spacing={2}>
                 <Grid item size={4}>
@@ -76,8 +111,8 @@ const Profile = () => {
                     fullWidth
                     label="What are you?"
                     name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
+                    defaultValue={user.gender}
+                    {...register("gender")}
                   >
                     <MenuItem value="Female">Female</MenuItem>
                     <MenuItem value="Male">Male</MenuItem>
@@ -90,8 +125,8 @@ const Profile = () => {
                     fullWidth
                     label="DAW"
                     name="daw"
-                    value={formData.daw}
-                    onChange={handleChange}
+                    defaultValue={user.daw}
+                    {...register("daw")}
                   >
                     <MenuItem value="Bitwig">Bitwig</MenuItem>
                     <MenuItem value="FL Studio">FL Studio</MenuItem>
@@ -103,21 +138,31 @@ const Profile = () => {
                     fullWidth
                     label="Age"
                     name="age"
-                    value={formData.age}
-                    onChange={handleChange}
+                    defaultValue={user.age}
+                    {...register("age")}
                   />
                 </Grid>
               </Grid>
             </Grid>
 
-            {/* Submit button row */}
             <Grid item>
-              <Button type="submit" fullWidth variant="outlined" size="large">
+              <Button
+                type="submit"
+                fullWidth
+                variant="outlined"
+                size="large"
+                disabled={disabled}
+              >
                 Update profile
               </Button>
             </Grid>
           </Grid>
         </form>
+        <ConfirmModal
+          modalState={modalState}
+          handleClose={handleClose}
+          submitForm={handleSubmit((data) => submitForm(data))}
+        />
       </Box>
     </DashboardLayout>
   );
