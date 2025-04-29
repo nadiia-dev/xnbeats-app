@@ -28,11 +28,25 @@ const DashboardLayout = ({ children, title }) => {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component={Link} to="/profile">
+          <ListItemButton component={Link} to="/dashboard/profile">
             <ListItemText primary="Profile" />
           </ListItemButton>
         </ListItem>
         <Divider />
+        {user.role === 2 ? (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/dashboard/reviews">
+                <ListItemText primary="Reviews" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/dashboard/messages">
+                <ListItemText primary="Messages" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        ) : null}
       </List>
     </Box>
   );

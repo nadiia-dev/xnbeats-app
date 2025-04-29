@@ -6,9 +6,8 @@ import {
   onAuthStateChanged,
   EmailAuthProvider,
   reauthenticateWithCredential,
-  updateEmail,
 } from "firebase/auth";
-import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { fireDb } from "../utils/firebaseConfig";
 
 export const createUserInDatabase = async ({

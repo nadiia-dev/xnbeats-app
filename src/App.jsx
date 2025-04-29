@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import Profile from "./pages/Profile";
+import Reviews from "./pages/reviews/Reviews";
+import AddEdit from "./pages/reviews/AddEdit";
 
 const router = createBrowserRouter([
   {
@@ -51,13 +53,22 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/profile",
+        path: "/dashboard/profile",
         element: (
           <PrivateRoute>
             <Profile />
           </PrivateRoute>
         ),
       },
+      {
+        path: "/dashboard/reviews",
+        element: (
+          <PrivateRoute>
+            <Reviews />
+          </PrivateRoute>
+        ),
+      },
+      { path: "/dashboard/reviews/add", element: <AddEdit /> },
     ],
   },
 ]);
