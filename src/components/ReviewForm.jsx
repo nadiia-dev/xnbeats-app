@@ -1,14 +1,9 @@
-import {
-  Box,
-  Button,
-  FormLabel,
-  MenuItem,
-  TextareaAutosize,
-  TextField,
-} from "@mui/material";
-import { useForm } from "react-hook-form";
+import "easymde/dist/easymde.min.css";
+import { Box, Button, FormLabel, MenuItem, TextField } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import SimpleMdeReact from "react-simplemde-editor";
 
 const schema = yup
   .object({
@@ -22,6 +17,7 @@ const schema = yup
 const ReviewForm = () => {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -49,7 +45,7 @@ const ReviewForm = () => {
               <span className="text-danger">{errors.title?.message}</span>
             )}
           </>
-          <>
+          {/* <>
             <FormLabel>Excerpt</FormLabel>
             <TextareaAutosize
               minRows={3}
@@ -59,6 +55,16 @@ const ReviewForm = () => {
             {errors.excerpt && (
               <span className="text-danger">{errors.excerpt?.message}</span>
             )}
+          </> */}
+          <>
+            <FormLabel>Excerpt</FormLabel>
+            <Controller
+              name="Excerpt"
+              control={control}
+              render={({ field }) => (
+                <SimpleMdeReact placeholder="Enter smth" {...field} />
+              )}
+            />
           </>
           <>
             <FormLabel>Rating</FormLabel>
@@ -95,13 +101,9 @@ const ReviewForm = () => {
               <span className="text-danger">{errors.public?.message}</span>
             )}
           </>
-          <button
-            // sx={{ mt: 2, width: 150 }}
-            type="submit"
-            // variant="contained"
-          >
+          <Button sx={{ mt: 2, width: 150 }} type="submit" variant="contained">
             Submit
-          </button>
+          </Button>
         </Box>
       </form>
     </>
@@ -109,37 +111,3 @@ const ReviewForm = () => {
 };
 
 export default ReviewForm;
-
-// import { useForm } from "react-hook-form";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import * as yup from "yup";
-
-// const schema = yup
-//   .object({
-//     firstName: yup.string().required(),
-//     age: yup.number().positive().integer().required(),
-//   })
-//   .required();
-
-// export default function ReviewForm() {
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm({
-//     resolver: yupResolver(schema),
-//   });
-//   const onSubmit = (data) => console.log(data);
-
-//   return (
-//     <form onSubmit={handleSubmit(onSubmit)}>
-//       <input {...register("firstName")} />
-//       <p>{errors.firstName?.message}</p>
-
-//       <input {...register("age")} />
-//       <p>{errors.age?.message}</p>
-
-//       <input type="submit" />
-//     </form>
-//   );
-// }
