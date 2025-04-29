@@ -1,13 +1,25 @@
 import "easymde/dist/easymde.min.css";
-import { Box, Button, FormLabel, MenuItem, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormLabel,
+  MenuItem,
+  TextareaAutosize,
+  TextField,
+} from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import SimpleMdeReact from "react-simplemde-editor";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../store/auth/selectors";
+import { addReview } from "../store/reviews/actions";
+import { toast } from "react-toastify";
 
 const schema = yup
   .object({
     title: yup.string().required("The title is required"),
+    content: yup.string().required("You must add an content"),
     excerpt: yup.string().required("You must add an excerpt"),
     rating: yup.number().required("The rating too"),
     public: yup.string().required("Is it public or a draft ?"),
@@ -19,13 +31,21 @@ const ReviewForm = () => {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   const onAddReview = (data) => {
     console.log(data);
+    dispatch(addReview({ data, user }));
+    reset();
+    toast.success("Congrats your post has been saved successfully!", {
+      position: "bottom-left",
+    });
   };
 
   return (
@@ -45,7 +65,7 @@ const ReviewForm = () => {
               <span className="text-danger">{errors.title?.message}</span>
             )}
           </>
-          {/* <>
+          <>
             <FormLabel>Excerpt</FormLabel>
             <TextareaAutosize
               minRows={3}
@@ -55,11 +75,11 @@ const ReviewForm = () => {
             {errors.excerpt && (
               <span className="text-danger">{errors.excerpt?.message}</span>
             )}
-          </> */}
+          </>
           <>
-            <FormLabel>Excerpt</FormLabel>
+            <FormLabel>Content</FormLabel>
             <Controller
-              name="Excerpt"
+              name="content"
               control={control}
               render={({ field }) => (
                 <SimpleMdeReact placeholder="Enter smth" {...field} />

@@ -7,7 +7,15 @@ import {
   EmailAuthProvider,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { fireDb } from "../utils/firebaseConfig";
 
 export const createUserInDatabase = async ({
@@ -109,5 +117,23 @@ export const updateUserProfile = async (data) => {
     return { user: snapshot.data() };
   } catch (error) {
     throw new Error("Failed to update document: " + error.message);
+  }
+};
+
+export const addReviewToDatabase = async (data, user) => {
+  try {
+    const docRef = await addDoc(collection(fireDb, "reviews"), {
+      ...data,
+      createdAt: serverTimestamp(),
+      ownerData: {
+        ownerid: user.uid,
+        name: `${user.name} ${user.lastName}`,
+      },
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.error("Failed to add review:", error);
+    throw new Error("Could not add review");
   }
 };
