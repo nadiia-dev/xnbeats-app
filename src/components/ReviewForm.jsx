@@ -49,10 +49,10 @@ const ReviewForm = () => {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onAddReview)}>
-        <Box display="flex" flexDirection="row" gap={2} padding={3}>
-          <Box flex={3} display="flex" flexDirection="column" gap={2}>
+    <Box display="flex" flexDirection="row" gap={2}>
+      <Box flex={3}>
+        <form onSubmit={handleSubmit(onAddReview)}>
+          <Box display="flex" flexDirection="column" gap={2}>
             <>
               <FormLabel>Title</FormLabel>
               <TextField
@@ -131,12 +131,12 @@ const ReviewForm = () => {
               Submit
             </Button>
           </Box>
-        </Box>
-      </form>
-      <Box flex={1} mt={3}>
+        </form>
+      </Box>
+      <Box display="flex" flex={2} mt={3}>
         <ImageUploader img="https://placehold.co/400" />
       </Box>
-    </>
+    </Box>
   );
 };
 

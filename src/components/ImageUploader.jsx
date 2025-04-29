@@ -39,7 +39,7 @@ const ImageUploader = ({ img }) => {
   return (
     <>
       <form>
-        <img src={img} alt="Image" width="100%" />
+        <img src={img} alt="Image" width="100%" className="mb-3" />
         <input type="file" onChange={handleUpload} />
         {progress > 0 && <LinearProgressWithLabel value={progress} />}
       </form>
