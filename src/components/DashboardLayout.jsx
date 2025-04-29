@@ -54,7 +54,7 @@ const DashboardLayout = ({ children, title }) => {
           }}
           sx={{
             "& .MuiDrawer-paper": {
-              zIndex: -1,
+              zIndex: 0,
               width: 240,
               boxSizing: "border-box",
               height: "100%",
