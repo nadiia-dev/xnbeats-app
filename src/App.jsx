@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { autoSignIn } from "./store/auth/actions";
 import { selectLoading } from "./store/auth/selectors";
+import Dashboard from "./pages/Dashboard";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 
 const router = createBrowserRouter([
   {
@@ -14,10 +17,38 @@ const router = createBrowserRouter([
     id: "root",
     element: <RootLayout />,
     children: [
-      { index: true, element: <Home /> },
-      { path: "/login", element: <Login /> },
-      { path: "/contact", element: <Contact /> },
-      { path: "/dashboard", element: <Contact /> },
+      {
+        index: true,
+        element: (
+          <PublicRoute>
+            <Home />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: "/contact",
+        element: (
+          <PublicRoute>
+            <Contact />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);
