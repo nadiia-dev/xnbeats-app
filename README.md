@@ -1,12 +1,61 @@
-# React + Vite
+# XNBeats
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**XNBeats** is a full-stack web application where users can explore, rate, and review beats. The app includes authentication, role-based access, and admin features. Built with React, Firebase, and Cloudinary.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔐 User authentication (sign up / log in)
+- 🔎 Browse and preview posts
+- ⭐ Leave reviews and star ratings
+- 🧑‍💼 Admin dashboard (protected routes)
+- ☁️ Image upload via Cloudinary
+- 🎛️ Responsive UI with MUI and Bootstarp
 
-## Expanding the ESLint configuration
+## 💠 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend**: React, React Router, MUI, React Hook Form
+- **Backend (as-a-service)**: Firebase Firestore, Firebase Auth
+- **Media Hosting**: Cloudinary
+- **Other tools**: Vite, ESLint, Prettier
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/nadiia-dev/xnbeats-app.git
+cd xnbeats-app
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Create your `.env` file
+
+Create a `.env` file in the root folder and use the `.env.example` as a reference:
+
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+VITE_CLOUD_NAME=your_cloudinary_cloud_name
+VITE_PRESET_NAME=your_upload_preset
+```
+
+### 4. Run the project locally
+
+```bash
+npm run dev
+```
+
+## 🔐 Firebase Rules
+
+This app uses Firestore security rules for role-based access.
