@@ -15,14 +15,16 @@ const Reviews = () => {
     dispatch(getReviews());
   }, [dispatch]);
 
+  const handleDelete = () => {};
+
   const columns = [
-    { field: "id", headerName: "ID", minWidth: 190 },
-    { field: "title", headerName: "Title", minWidth: 200 },
+    { field: "id", headerName: "ID", minWidth: 100 },
+    { field: "title", headerName: "Title", minWidth: 250 },
     { field: "rating", headerName: "Rating", minWidth: 90 },
     {
       field: "owner",
       headerName: "Owner",
-      minWidth: 200,
+      minWidth: 230,
     },
     {
       field: "status",
@@ -33,28 +35,37 @@ const Reviews = () => {
       field: "actions",
       headerName: "Actions",
       minWidth: 200,
+      renderCell: (params) => {
+        return (
+          <div>
+            <Link
+              to={`/dashboard/reviews/edit/${params.row.reviewId}`}
+              className="btn text-primary"
+            >
+              EDIT
+            </Link>
+            <Button
+              variant="text"
+              color="error"
+              size="small"
+              onClick={() => handleDelete(params.row.reviewId)}
+            >
+              DELETE
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
-  const actions = (
-    <div>
-      <Button variant="contained" color="primary" size="small">
-        Edit
-      </Button>
-      <Button variant="outlined" color="secondary" size="small">
-        Delete
-      </Button>
-    </div>
-  );
-
-  const rows = reviews.map((review) => {
+  const rows = reviews.map((review, index) => {
     return {
-      id: review.id,
+      id: index + 1,
+      reviewId: review.id,
       title: review.title,
       rating: review.rating,
       owner: review.ownerData.name,
       status: review.public,
-      actions,
     };
   });
 
@@ -62,7 +73,12 @@ const Reviews = () => {
 
   return (
     <DashboardLayout title="Reviews">
-      <Link to="/dashboard/reviews/add">Add new Review</Link>
+      <Link
+        to="/dashboard/reviews/add"
+        className="btn btn-outline-primary mb-4"
+      >
+        Add new Review
+      </Link>
       <Paper sx={{ height: 400, width: "100%" }}>
         <DataGrid
           rows={rows}
