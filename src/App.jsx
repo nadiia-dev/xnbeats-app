@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import Reviews from "./pages/reviews/Reviews";
 import AddEdit from "./pages/reviews/AddEdit";
 import ReviewDetails from "./pages/ReviewDetails";
+import Messages from "./pages/Messages";
 
 const router = createBrowserRouter([
   {
@@ -35,11 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/contact",
-        element: (
-          <PublicRoute>
-            <Contact />
-          </PublicRoute>
-        ),
+        element: <Contact />,
       },
       {
         path: "/dashboard",
@@ -86,6 +83,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <ReviewDetails />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/messages",
+        element: (
+          <PrivateRoute>
+            <Messages />
           </PrivateRoute>
         ),
       },

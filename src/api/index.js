@@ -233,3 +233,36 @@ export const fetchPostsFromDatabase = async ({ limit, where } = {}) => {
     throw error;
   }
 };
+
+export const addMessageToDatabase = async (data) => {
+  try {
+    const docRef = await addDoc(collection(fireDb, "messages"), {
+      ...data,
+      createdAt: serverTimestamp(),
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.error("Failed to add review:", error);
+    throw new Error("Could not add review");
+  }
+};
+
+export const getAllMessagessFromDatabase = async () => {
+  try {
+    const snapshot = await getDocs(collection(fireDb, "messages"));
+
+    const messages = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt.toDate().toISOString(),
+      };
+    });
+    return messages;
+  } catch (error) {
+    console.error("Failed to fetch messages:", error);
+    throw new Error("Could not fetch messages");
+  }
+};
