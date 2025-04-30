@@ -13,11 +13,15 @@ import * as yup from "yup";
 import SimpleMdeReact from "react-simplemde-editor";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../store/auth/selectors";
-import { addReview } from "../store/reviews/actions";
+import { selectCurReview } from "../store/reviews/selectors";
+import {
+  addReview,
+  updateReview,
+  getReviewById,
+} from "../store/reviews/actions";
 import { toast } from "react-toastify";
 import ImageUploader from "./ImageUploader";
-import { useEffect, useState } from "react";
-import { getReviewFromDatabase } from "../api";
+import { useEffect } from "react";
 
 const schema = yup
   .object({
@@ -32,7 +36,7 @@ const schema = yup
 const ReviewForm = ({ id }) => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
-  const [curReview, setCurReview] = useState();
+  const curReview = useSelector(selectCurReview);
   const defaultValues = {
     title: "",
     excerpt: "",
@@ -52,38 +56,34 @@ const ReviewForm = ({ id }) => {
   });
 
   useEffect(() => {
-    const getReview = async (id) => {
-      const review = await getReviewFromDatabase(id);
-      if (review) {
-        reset({
-          title: review.title || "",
-          excerpt: review.excerpt || "",
-          content: review.content || "",
-          rating: review.rating || "",
-          public: review.public || "",
-        });
-        setCurReview(review);
-      }
-    };
     if (id) {
-      getReview(id);
+      dispatch(getReviewById(id));
     }
-  }, [id, reset]);
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    if (curReview) {
+      reset({
+        title: curReview.title || "",
+        excerpt: curReview.excerpt || "",
+        content: curReview.content || "",
+        rating: curReview.rating || "",
+        public: curReview.public || "",
+      });
+    }
+  }, [curReview, reset]);
 
   const onReview = (data) => {
-    console.log(data);
     if (!curReview) {
       dispatch(addReview({ data, user }));
     } else {
-      // dispatch(editReview({ data, user }));
+      dispatch(updateReview({ id, reviewData: data }));
     }
     reset();
     toast.success("Congrats your post has been saved successfully!", {
-      position: "bottom-left",
+      position: "bottom-right",
     });
   };
-
-  // console.log(curReview);
 
   return (
     <Box display="flex" flexDirection="row" gap={2}>

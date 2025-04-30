@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addReview, getReviews } from "./actions";
+import { addReview, getReviewById, getReviews, updateReview } from "./actions";
 
 const initialState = {
-  addedReview: "",
+  reviewId: null,
+  curReview: null,
   reviews: [],
 };
 
@@ -12,7 +13,7 @@ const reviewsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addReview.fulfilled, (state, action) => {
-        state.addedReview = action.payload;
+        state.reviewId = action.payload;
       })
       .addCase(getReviews.fulfilled, (state, action) => {
         const newReview = action.payload[0];
@@ -22,6 +23,20 @@ const reviewsSlice = createSlice({
 
         if (!exists) {
           state.reviews.push(newReview);
+        }
+      })
+      .addCase(getReviewById.fulfilled, (state, action) => {
+        state.reviewId = action.payload.id;
+        state.curReview = action.payload;
+      })
+      .addCase(updateReview.fulfilled, (state, action) => {
+        const newReview = action.payload;
+        const index = state.reviews.findIndex(
+          (review) => review.id === newReview.id
+        );
+
+        if (index !== -1) {
+          state.reviews.splice(index, 1, newReview);
         }
       });
   },

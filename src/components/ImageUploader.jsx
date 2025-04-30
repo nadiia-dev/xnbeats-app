@@ -3,7 +3,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { Box, Typography } from "@mui/material";
 import { uploadImageToCloudinary } from "../utils/imageUploader";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAddedReview } from "../store/reviews/selectors";
+import { selectReviewId } from "../store/reviews/selectors";
 import { updateReviewImage } from "../store/reviews/actions";
 
 function LinearProgressWithLabel(props) {
@@ -25,7 +25,7 @@ function LinearProgressWithLabel(props) {
 const ImageUploader = ({ img }) => {
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
-  const addedReview = useSelector(selectAddedReview);
+  const reviewId = useSelector(selectReviewId);
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -33,7 +33,7 @@ const ImageUploader = ({ img }) => {
       const percent = Math.round((event.loaded * 100) / event.total);
       setProgress(percent);
     });
-    dispatch(updateReviewImage({ addedReview, imageUrl: url }));
+    dispatch(updateReviewImage({ reviewId, imageUrl: url }));
     console.log("Uploaded image URL:", url);
   };
   return (
