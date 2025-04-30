@@ -52,7 +52,15 @@ const ReviewForm = ({ id }) => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues,
+    defaultValues: id
+      ? {
+          title: curReview?.title || "",
+          excerpt: curReview?.excerpt || "",
+          content: curReview?.content || "",
+          rating: curReview?.rating || "",
+          public: curReview?.public || "",
+        }
+      : defaultValues,
   });
 
   useEffect(() => {
@@ -62,7 +70,7 @@ const ReviewForm = ({ id }) => {
   }, [id, dispatch]);
 
   useEffect(() => {
-    if (curReview) {
+    if (id && curReview) {
       reset({
         title: curReview.title || "",
         excerpt: curReview.excerpt || "",
@@ -71,10 +79,10 @@ const ReviewForm = ({ id }) => {
         public: curReview.public || "",
       });
     }
-  }, [curReview, reset]);
+  }, [curReview, reset, id]);
 
   const onReview = (data) => {
-    if (!curReview) {
+    if (!id) {
       dispatch(addReview({ data, user }));
     } else {
       dispatch(updateReview({ id, reviewData: data }));
@@ -174,7 +182,7 @@ const ReviewForm = ({ id }) => {
       </Box>
       <Box display="flex" flex={2} mt={3}>
         <ImageUploader
-          img={curReview ? curReview.imageUrl : "https://placehold.co/400"}
+          img={id ? curReview.imageUrl : "https://placehold.co/400"}
         />
       </Box>
     </Box>

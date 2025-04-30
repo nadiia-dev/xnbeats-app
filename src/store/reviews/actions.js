@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   addImageToReview,
   addReviewToDatabase,
+  fetchPostsFromDatabase,
   getAllReviewsFromDatabase,
   getReviewFromDatabase,
   updateReviewInDatabase,
@@ -60,6 +61,18 @@ export const updateReview = createAsyncThunk(
   async ({ id, reviewData }, { rejectWithValue }) => {
     try {
       const reviews = await updateReviewInDatabase(id, reviewData);
+      return reviews;
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+export const getPosts = createAsyncThunk(
+  "reviews/getRatedReviews",
+  async ({ limit, where }, { rejectWithValue }) => {
+    try {
+      const reviews = await fetchPostsFromDatabase(limit, where);
       return reviews;
     } catch (e) {
       return rejectWithValue(e.message);

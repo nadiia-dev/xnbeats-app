@@ -13,9 +13,13 @@ import {
   doc,
   getDoc,
   getDocs,
+  orderBy,
+  query,
   serverTimestamp,
   setDoc,
   updateDoc,
+  where as whereFn,
+  limit as limitFn,
 } from "firebase/firestore";
 import { fireDb } from "../utils/firebaseConfig";
 
@@ -196,5 +200,35 @@ export const updateReviewInDatabase = async (id, reviewData) => {
     return updatedData;
   } catch (error) {
     console.error("Error updating review:", error);
+  }
+};
+
+export const fetchPostsFromDatabase = async ({
+  limit = 3,
+  where = null,
+} = {}) => {
+  try {
+    const baseRef = collection(fireDb, "reviews");
+    let q = query(baseRef, whereFn("public", "==", 1));
+
+    if (where) {
+      q = query(q, whereFn(where[0], where[1], where[2]));
+    } else {
+      q = query(q, orderBy("createdAt"));
+    }
+
+    q = query(q, limitFn(limit));
+
+    const snapshot = await getDocs(q);
+
+    const posts = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return posts;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    throw error;
   }
 };

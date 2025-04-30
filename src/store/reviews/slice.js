@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addReview, getReviewById, getReviews, updateReview } from "./actions";
+import {
+  addReview,
+  getPosts,
+  getReviewById,
+  getReviews,
+  updateReview,
+} from "./actions";
 
 const initialState = {
   reviewId: null,
@@ -16,14 +22,16 @@ const reviewsSlice = createSlice({
         state.reviewId = action.payload;
       })
       .addCase(getReviews.fulfilled, (state, action) => {
-        const newReview = action.payload[0];
-        const exists = state.reviews.some(
-          (review) => review.id === newReview.id
-        );
+        const reviews = action.payload;
+        reviews.forEach((newReview) => {
+          const exists = state.reviews.some(
+            (review) => review.id === newReview.id
+          );
 
-        if (!exists) {
-          state.reviews.push(newReview);
-        }
+          if (!exists) {
+            state.reviews.push(newReview);
+          }
+        });
       })
       .addCase(getReviewById.fulfilled, (state, action) => {
         state.reviewId = action.payload.id;
@@ -39,6 +47,18 @@ const reviewsSlice = createSlice({
         if (index !== -1) {
           state.reviews[index] = newReview;
         }
+      })
+      .addCase(getPosts.fulfilled, (state, action) => {
+        const reviews = action.payload;
+        reviews.forEach((newReview) => {
+          const exists = state.reviews.some(
+            (review) => review.id === newReview.id
+          );
+
+          if (!exists) {
+            state.reviews.push(newReview);
+          }
+        });
       });
   },
 });
