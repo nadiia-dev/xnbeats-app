@@ -17,6 +17,11 @@ const initialState = {
 const reviewsSlice = createSlice({
   name: "reviews",
   initialState,
+  reducers: {
+    clearReview(state) {
+      state.curReview = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addReview.fulfilled, (state, action) => {
@@ -64,4 +69,5 @@ const reviewsSlice = createSlice({
   },
 });
 
+export const { clearReview } = reviewsSlice.actions;
 export const reviewsReducer = reviewsSlice.reducer;
