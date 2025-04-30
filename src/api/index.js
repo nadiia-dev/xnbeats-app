@@ -203,13 +203,10 @@ export const updateReviewInDatabase = async (id, reviewData) => {
   }
 };
 
-export const fetchPostsFromDatabase = async ({
-  limit = 3,
-  where = null,
-} = {}) => {
+export const fetchPostsFromDatabase = async ({ limit, where } = {}) => {
   try {
     const baseRef = collection(fireDb, "reviews");
-    let q = query(baseRef, whereFn("public", "==", 1));
+    let q = query(baseRef, whereFn("public", "==", "public"));
 
     if (where) {
       q = query(q, whereFn(where[0], where[1], where[2]));
@@ -221,10 +218,14 @@ export const fetchPostsFromDatabase = async ({
 
     const snapshot = await getDocs(q);
 
-    const posts = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const posts = snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt.toDate().toISOString(),
+      };
+    });
 
     return posts;
   } catch (error) {

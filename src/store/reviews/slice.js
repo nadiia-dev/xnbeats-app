@@ -11,6 +11,7 @@ const initialState = {
   reviewId: null,
   curReview: "",
   reviews: [],
+  posts: [],
 };
 
 const reviewsSlice = createSlice({
@@ -56,7 +57,7 @@ const reviewsSlice = createSlice({
           );
 
           if (!exists) {
-            state.reviews.push(newReview);
+            state.posts.push(newReview);
           }
         });
       });
