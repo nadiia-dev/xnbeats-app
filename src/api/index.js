@@ -155,11 +155,28 @@ export const getAllReviewsFromDatabase = async () => {
       return {
         id: doc.id,
         ...data,
+        createdAt: data.createdAt.toDate().toISOString(),
       };
     });
     return reviews;
   } catch (error) {
     console.error("Failed to fetch reviews:", error);
     throw new Error("Could not fetch reviews");
+  }
+};
+
+export const getReviewFromDatabase = async (id) => {
+  try {
+    const docRef = doc(fireDb, "reviews", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      throw new Error("No such document");
+    }
+  } catch (error) {
+    console.error("Failed to fetch review:", error);
+    throw new Error("Could not fetch review");
   }
 };

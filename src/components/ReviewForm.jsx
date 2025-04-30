@@ -16,6 +16,8 @@ import { selectUser } from "../store/auth/selectors";
 import { addReview } from "../store/reviews/actions";
 import { toast } from "react-toastify";
 import ImageUploader from "./ImageUploader";
+import { useEffect, useState } from "react";
+import { getReviewFromDatabase } from "../api";
 
 const schema = yup
   .object({
@@ -27,7 +29,17 @@ const schema = yup
   })
   .required();
 
-const ReviewForm = () => {
+const ReviewForm = ({ id }) => {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const [curReview, setCurReview] = useState();
+  const defaultValues = {
+    title: "",
+    excerpt: "",
+    content: "",
+    rating: "",
+    public: "",
+  };
   const {
     register,
     control,
@@ -36,22 +48,47 @@ const ReviewForm = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues,
   });
-  const user = useSelector(selectUser);
-  const dispatch = useDispatch();
 
-  const onAddReview = (data) => {
-    dispatch(addReview({ data, user }));
+  useEffect(() => {
+    const getReview = async (id) => {
+      const review = await getReviewFromDatabase(id);
+      if (review) {
+        reset({
+          title: review.title || "",
+          excerpt: review.excerpt || "",
+          content: review.content || "",
+          rating: review.rating || "",
+          public: review.public || "",
+        });
+        setCurReview(review);
+      }
+    };
+    if (id) {
+      getReview(id);
+    }
+  }, [id, reset]);
+
+  const onReview = (data) => {
+    console.log(data);
+    if (!curReview) {
+      dispatch(addReview({ data, user }));
+    } else {
+      // dispatch(editReview({ data, user }));
+    }
     reset();
     toast.success("Congrats your post has been saved successfully!", {
       position: "bottom-left",
     });
   };
 
+  // console.log(curReview);
+
   return (
     <Box display="flex" flexDirection="row" gap={2}>
       <Box flex={3}>
-        <form onSubmit={handleSubmit(onAddReview)}>
+        <form onSubmit={handleSubmit(onReview)}>
           <Box display="flex" flexDirection="column" gap={2}>
             <>
               <FormLabel>Title</FormLabel>
@@ -90,35 +127,37 @@ const ReviewForm = () => {
             </>
             <>
               <FormLabel>Rating</FormLabel>
-              <TextField
-                select
-                fullWidth
-                label="Choose..."
+              <Controller
                 name="rating"
-                {...register("rating")}
-              >
-                <MenuItem value="1">1 star</MenuItem>
-                <MenuItem value="2">2 stars</MenuItem>
-                <MenuItem value="3">3 stars</MenuItem>
-                <MenuItem value="4">4 stars</MenuItem>
-                <MenuItem value="5">5 stars</MenuItem>
-              </TextField>
+                control={control}
+                render={({ field }) => (
+                  <TextField select fullWidth label="Choose..." {...field}>
+                    <MenuItem value="1">1 star</MenuItem>
+                    <MenuItem value="2">2 stars</MenuItem>
+                    <MenuItem value="3">3 stars</MenuItem>
+                    <MenuItem value="4">4 stars</MenuItem>
+                    <MenuItem value="5">5 stars</MenuItem>
+                  </TextField>
+                )}
+              />
               {errors.rating && (
                 <span className="text-danger">{errors.rating?.message}</span>
               )}
             </>
             <>
               <FormLabel>Public</FormLabel>
-              <TextField
-                select
-                fullWidth
-                label="Choose..."
+              <Controller
                 name="public"
-                {...register("public")}
-              >
-                <MenuItem value="public">Public</MenuItem>
-                <MenuItem value="private">Private</MenuItem>
-              </TextField>
+                control={control}
+                render={({ field }) => (
+                  <>
+                    <TextField select fullWidth label="Choose..." {...field}>
+                      <MenuItem value="public">Public</MenuItem>
+                      <MenuItem value="private">Private</MenuItem>
+                    </TextField>
+                  </>
+                )}
+              />
               {errors.public && (
                 <span className="text-danger">{errors.public?.message}</span>
               )}
@@ -134,7 +173,9 @@ const ReviewForm = () => {
         </form>
       </Box>
       <Box display="flex" flex={2} mt={3}>
-        <ImageUploader img="https://placehold.co/400" />
+        <ImageUploader
+          img={curReview ? curReview.imageUrl : "https://placehold.co/400"}
+        />
       </Box>
     </Box>
   );

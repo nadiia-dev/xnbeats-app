@@ -68,7 +68,22 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-      { path: "/dashboard/reviews/add", element: <AddEdit /> },
+      {
+        path: "/dashboard/reviews/add",
+        element: (
+          <PrivateRoute>
+            <AddEdit />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/reviews/edit/:id",
+        element: (
+          <PrivateRoute>
+            <AddEdit />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);
