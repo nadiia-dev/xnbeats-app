@@ -23,6 +23,7 @@ function LinearProgressWithLabel(props) {
 }
 
 const ImageUploader = ({ img }) => {
+  const [imgUrl, setImgUrl] = useState(img);
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const reviewId = useSelector(selectReviewId);
@@ -34,12 +35,13 @@ const ImageUploader = ({ img }) => {
       setProgress(percent);
     });
     dispatch(updateReviewImage({ reviewId, imageUrl: url }));
+    setImgUrl(url);
     console.log("Uploaded image URL:", url);
   };
   return (
     <>
       <form>
-        <img src={img} alt="Image" width="100%" className="mb-3" />
+        <img src={imgUrl} alt="Image" width="100%" className="mb-3" />
         <input type="file" onChange={handleUpload} />
         {progress > 0 && <LinearProgressWithLabel value={progress} />}
       </form>

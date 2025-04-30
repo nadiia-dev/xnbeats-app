@@ -3,7 +3,7 @@ import { addReview, getReviewById, getReviews, updateReview } from "./actions";
 
 const initialState = {
   reviewId: null,
-  curReview: null,
+  curReview: "",
   reviews: [],
 };
 
@@ -31,12 +31,13 @@ const reviewsSlice = createSlice({
       })
       .addCase(updateReview.fulfilled, (state, action) => {
         const newReview = action.payload;
+        state.curReview = action.payload;
         const index = state.reviews.findIndex(
           (review) => review.id === newReview.id
         );
 
         if (index !== -1) {
-          state.reviews.splice(index, 1, newReview);
+          state.reviews[index] = newReview;
         }
       });
   },
