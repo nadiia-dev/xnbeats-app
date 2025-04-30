@@ -55,14 +55,12 @@ const reviewsSlice = createSlice({
         }
       })
       .addCase(getPosts.fulfilled, (state, action) => {
-        const reviews = action.payload;
-        reviews.forEach((newReview) => {
-          const exists = state.reviews.some(
-            (review) => review.id === newReview.id
-          );
+        const posts = action.payload;
+        posts.forEach((newPost) => {
+          const exists = state.posts.some((post) => post.id === newPost.id);
 
           if (!exists) {
-            state.posts.push(newReview);
+            state.posts.push(newPost);
           }
         });
       });
